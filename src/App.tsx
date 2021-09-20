@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react';
+import styled from 'styled-components';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const MyDiv = styled.div`
+  font-family: Verdana;
+  & > div {
+    padding-bottom: 5px;
+  }
+`;
+
+export const App = () => {
+
+    const [text, setText] = useState<string | number | readonly string[] | undefined>('');
+
+    const [output, setOutput] = useState<string>('');
+
+    const search = (name: string | number | readonly string[] | undefined): void => {
+        if (typeof name === 'string') {
+            fetch(`https://api.tvmaze.com/search/shows?q=${name}`)
+                .then(resp => resp.text())
+                .then(t => setOutput(t));
+        } else {
+            console.log('SOME ERROR', typeof name);
+        }
+    }
+
+    return (
+        <MyDiv>
+            <div>Episode Randomizer</div>
+            <label>Enter Episode Name: <input value={text} onChange={(e) => setText(e.target.value)}
+                                              type={'text'}/></label>
+            <div>{output}</div>
+            <button onClick={() => search(text)}>Search</button>
+        </MyDiv>
+    );
 }
-
-export default App;
