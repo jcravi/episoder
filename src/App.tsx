@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
+import {IListing, Listings} from "./components/Listings";
+import {search} from "./clients/tvmaze";
 
 const MyDiv = styled.div`
   font-family: Verdana;
@@ -12,13 +14,22 @@ export const App = () => {
 
     const [text, setText] = useState<string | number | readonly string[] | undefined>('');
 
-    const [output, setOutput] = useState<string>('');
+    const [listings, setListings] = useState<Array<IListing>>([]);
 
-    const search = (name: string | number | readonly string[] | undefined): void => {
+    const [selected, setSelected] = useState<string>('');
+
+    const entered = (name: string | number | readonly string[] | undefined): void => {
         if (typeof name === 'string') {
-            fetch(`https://api.tvmaze.com/search/shows?q=${name}`)
-                .then(resp => resp.text())
-                .then(t => setOutput(t));
+            search(name)
+                .then(itvmaze => itvmaze.map(i => {
+                    return {
+                        name: i.show.name,
+                        startDate: i.show.premiered,
+                        endDate: i.show.ended,
+                        image: i.show.image.medium
+                    } as IListing;
+                }))
+                .then(l => setListings(l));
         } else {
             console.log('SOME ERROR', typeof name);
         }
@@ -29,8 +40,9 @@ export const App = () => {
             <div>Episode Randomizer</div>
             <label>Enter Episode Name: <input value={text} onChange={(e) => setText(e.target.value)}
                                               type={'text'}/></label>
-            <div>{output}</div>
-            <button onClick={() => search(text)}>Search</button>
+            <button onClick={() => entered(text)}>Search</button>
+            <div>{selected}</div>
+            <Listings listings={listings} setSelected={setSelected}/>
         </MyDiv>
     );
 }
