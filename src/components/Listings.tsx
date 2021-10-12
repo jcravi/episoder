@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { connect } from "react-redux";
+import { addAction } from "../slices/selected";
 
 export interface IListing {
   id: number;
@@ -8,18 +10,18 @@ export interface IListing {
   image: string;
 }
 
-export const Listings = ({
+const ListingsComponent = ({
   listings,
-  addSelected,
+  add,
 }: {
   listings: Array<IListing>;
-  addSelected: (name: IListing) => void;
+  add: (name: IListing) => void;
 }) => {
   return (
     <div>
       {listings.map((listing) => {
         return (
-          <Listing listing={listing} onClick={() => addSelected(listing)} />
+          <Listing listing={listing} onClick={() => add(listing)} />
         );
       })}
     </div>
@@ -73,3 +75,9 @@ const HoverImage = ({ url }: { url: string }) => {
     </div>
   );
 };
+
+const mapDispatchToProps = {
+  add: addAction,
+};
+
+export const Listings = connect(null, mapDispatchToProps)(ListingsComponent);
