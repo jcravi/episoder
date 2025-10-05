@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import styled from "styled-components";
 
-import { IListing } from "./Listings";
-import { episodes, ITVEpisode } from "../clients/tvmaze";
-import { removeAction } from "../slices/selected";
+import { useAppDispatch, useAppSelector } from "../hooks.ts";
+import { episodes, ITVEpisode } from "../clients/tvmaze.ts";
+import { removeAction } from "../slices/selected.ts";
+import { RootState } from "../store.ts";
 
 const SelectedDiv = styled.div`
   cursor: pointer;
@@ -13,19 +13,17 @@ const SelectedDiv = styled.div`
   padding: 2px 7px 2px 7px;
 `;
 
-const RandomizerComponent = ({
-  selected,
+export const Randomizer = ({
   setShow,
-  remove,
 }: {
-  selected: Array<IListing>;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
-  remove: (listing: IListing) => void;
 }) => {
-  function selectRandom() {
+  const selected = useAppSelector((state: RootState) => state.selected);
+  const dispatch = useAppDispatch();
+  const selectRandom = () => {
     setShow(false);
     const randomShow = selected[Math.floor(Math.random() * selected.length)];
-    episodes(randomShow.id).then((episodes) => {
+    episodes(randomShow.id).then((episodes: Array<ITVEpisode>) => {
       const itvEpisode = episodes[Math.floor(Math.random() * episodes.length)];
       setRandomized({ ...itvEpisode, show: randomShow.name });
     });
@@ -38,16 +36,23 @@ const RandomizerComponent = ({
   return (
     <>
       <div>
-        {selected.length === 0 ? (
-          <div style={{ paddingTop: "8px" }}>Nothing selected</div>
-        ) : (
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button onClick={() => selectRandom()}>Randomize</button>
-            {selected.map((s) => (
-              <SelectedDiv onClick={() => remove(s)}>{s.name}</SelectedDiv>
-            ))}
-          </div>
-        )}
+        {selected.length === 0
+          ? <div style={{ paddingTop: "8px" }}>No TV shows selected yet!</div>
+          : (
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button type="button" onClick={() => selectRandom()}>
+                Randomize
+              </button>
+              {selected.map((s) => (
+                <SelectedDiv
+                  key={s.id}
+                  onClick={() => dispatch(removeAction(s))}
+                >
+                  {s.name}
+                </SelectedDiv>
+              ))}
+            </div>
+          )}
       </div>
       <div>
         {randomized && (
@@ -56,7 +61,7 @@ const RandomizerComponent = ({
             <div>
               Season {randomized.season}, Episode: {randomized.number}
             </div>
-            <div>{randomized.name} </div>
+            <div>{randomized.name}</div>
           </div>
         )}
       </div>
@@ -64,15 +69,3 @@ const RandomizerComponent = ({
   );
 };
 
-const mapStateToProps = ({ selected }: { selected: Array<IListing> }) => ({
-  selected,
-});
-
-const mapDispatchToProps = {
-  remove: removeAction,
-};
-
-export const Randomizer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RandomizerComponent);

@@ -29,7 +29,7 @@ export const search = (query: string): Promise<Array<ITVMaze>> =>
 export const episodes = (id: number): Promise<Array<ITVEpisode>> => {
   const fromCache = episodeCache.get(id);
   if (fromCache) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       resolve(fromCache);
     });
   }

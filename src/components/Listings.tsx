@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { connect } from "react-redux";
-import { addAction } from "../slices/selected";
+import { useAppDispatch } from "../hooks.ts";
+import { addAction } from "../slices/selected.ts";
 
 export interface IListing {
   id: number;
@@ -10,18 +10,21 @@ export interface IListing {
   image: string;
 }
 
-const ListingsComponent = ({
+export const Listings = ({
   listings,
-  add,
 }: {
   listings: Array<IListing>;
-  add: (name: IListing) => void;
 }) => {
+  const dispatch = useAppDispatch();
   return (
     <div>
       {listings.map((listing) => {
         return (
-          <Listing listing={listing} onClick={() => add(listing)} />
+          <Listing
+            key={listing.id}
+            listing={listing}
+            onClick={() => dispatch(addAction(listing))}
+          />
         );
       })}
     </div>
@@ -71,13 +74,7 @@ const Listing = ({
 const HoverImage = ({ url }: { url: string }) => {
   return (
     <div style={{ position: "relative", top: "10px" }}>
-      <img style={{ position: "absolute" }} alt={"larger"} src={url} />
+      <img style={{ position: "absolute" }} alt="larger" src={url} />
     </div>
   );
 };
-
-const mapDispatchToProps = {
-  add: addAction,
-};
-
-export const Listings = connect(null, mapDispatchToProps)(ListingsComponent);

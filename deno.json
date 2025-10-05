@@ -1,0 +1,31 @@
+{
+  "tasks": {
+    "dev": "deno run -A --node-modules-dir npm:vite",
+    "build": "deno run -A --node-modules-dir npm:vite build",
+    "preview": "deno run -A --node-modules-dir npm:vite preview",
+    "serve": "deno run --allow-net --allow-read https://deno.land/std/http/file_server.ts dist/",
+    "deploy": "deno run -A --node-modules-dir npm:gh-pages -d dist"
+  },
+  "compilerOptions": {  
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "strict": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "react", "react-dom"]
+  },
+  "nodeModulesDir": "auto",
+  "imports": {
+    "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.5",
+    "@vitejs/plugin-react": "npm:@vitejs/plugin-react@^5.0.4",
+    "gh-pages": "npm:gh-pages@^6.3.0",
+    "react": "npm:react@^19.2.0",
+    "react-dom": "npm:react-dom@^19.2.0",
+    "react-dom/client": "npm:react-dom@^19.2.0/client",
+    "styled-components": "npm:styled-components@^6.1.19",
+    "@reduxjs/toolkit": "npm:@reduxjs/toolkit@^2.9.0",
+    "react-redux": "npm:react-redux@^9.2.0",
+    "@types/react": "npm:@types/react@^19.2.0",
+    "@types/react-dom": "npm:@types/react-dom@^19.2.0",
+    "@types/styled-components": "npm:@types/styled-components@^5.1.34"
+  }
+}

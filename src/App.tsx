@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { IListing, Listings } from "./components/Listings";
-import { search } from "./clients/tvmaze";
-import { Randomizer } from "./components/Randomizer";
+
+import { IListing, Listings } from "./components/Listings.tsx";
+import { search } from "./clients/tvmaze.ts";
+import { Randomizer } from "./components/Randomizer.tsx";
 
 const MyDiv = styled.div`
   font-family: Verdana;
@@ -12,18 +13,16 @@ const MyDiv = styled.div`
 `;
 
 export const App = () => {
-  const [text, setText] = useState<
-    string | number | readonly string[] | undefined
-  >("");
+  const [text, setText] = useState<string>("");
 
   const [listings, setListings] = useState<Array<IListing>>([]);
 
   const [show, setShow] = useState<boolean>(false);
 
   const entered = (
-    name: string | number | readonly string[] | undefined
+    name: string,
   ): void => {
-    if (typeof name === "string") {
+    if (name) {
       // setRandomized(undefined);
       search(name)
         .then((itvmaze) =>
@@ -52,14 +51,14 @@ export const App = () => {
       <Randomizer setShow={setShow} />
       <div>
         <label>
-          Enter Episode Name:{" "}
+          Enter TV Show Name:{" "}
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
-            type={"text"}
+            type="text"
           />
         </label>
-        <button onClick={() => entered(text)}>Search</button>
+        <button type="button" onClick={() => entered(text)}>Search</button>
       </div>
       {show && <Listings listings={listings} />}
     </MyDiv>

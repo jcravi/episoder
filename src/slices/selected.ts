@@ -1,27 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { IListing } from "../components/Listings";
+import { IListing } from "../components/Listings.tsx";
 
-interface State {
-  selected: Array<IListing>;
-}
+type State = Array<IListing>;
 
-const initialState: State = {
-  selected: [],
-};
+const initialState: State = [];
 
 export const selectedSlice = createSlice({
   name: "selected",
   initialState,
   reducers: {
     addAction: (state, action: PayloadAction<IListing>) => {
-      state.selected.push(action.payload);
+      state.push(action.payload);
     },
     removeAction: (state, action: PayloadAction<IListing>) => {
-      const index = state.selected.indexOf(action.payload);
-      const before = state.selected.slice(0, index);
-      const after = state.selected.slice(index + 1, state.selected.length);
-      return { selected: [...before, ...after] };
+      return state.filter((s) => s.id !== action.payload.id);
     },
   },
 });
